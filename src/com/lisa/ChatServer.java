@@ -49,11 +49,14 @@ public class ChatServer {
 
                 printWriters.add(out);
 
+                out.println("Hello, there. Please enter a username to join the chat: ");
+                String username = in.readLine();
+
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
                     System.out.println(inputLine);
                     for(PrintWriter printWriter : printWriters) {
-                        printWriter.println(inputLine);
+                        printWriter.println(username + " says: " + inputLine);
                     }
                 }
             } catch (IOException e) {
