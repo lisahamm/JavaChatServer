@@ -32,6 +32,8 @@ public class ChatThread extends Thread {
             while ((inputLine = in.readLine()) != null) {
                 String message = username + " says: " + inputLine;
                 System.out.println(message);
+                if(inputLine.equals("Bye"))
+                    break;
                 notifyObservers(message);
             }
         } catch (IOException e) {
