@@ -4,25 +4,22 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ChatServer {
+public class ChatServer implements Observer, Runnable {
     private static Set<PrintWriter> printWriters = new HashSet<PrintWriter>();
+    private int portNumber = 0;
 
-    public static void main(String[] args) throws IOException {
+    public ChatServer(int portNumber) {
+        this.portNumber = portNumber;
+    }
 
-        if (args.length != 1) {
-            System.err.println("Usage: java EchoServer <port number>");
-            System.exit(1);
-        }
-
-        int portNumber = Integer.parseInt(args[0]);
-
-        try (ServerSocket serverSocket =
-                     new ServerSocket(Integer.parseInt(args[0]))) {
+    public void run() {
+        try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             System.out.println("Server is listening on port: " + portNumber);
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Connection made with " + clientSocket);
-                new ChatThread(clientSocket).start();
+                ChatThread chatThread = new ChatThread(clientSocket, this);
+                chatThread.start();
             }
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "
@@ -31,37 +28,13 @@ public class ChatServer {
         }
     }
 
-    public static class ChatThread extends Thread {
-        private Socket clientSocket = null;
+    public void addPrintWriter(PrintWriter printWriter) {
+        printWriters.add(printWriter);
+    }
 
-        public ChatThread(Socket socket) {
-            super("ChatThread");
-            this.clientSocket = socket;
-        }
-
-        public void run() {
-            try (
-                    PrintWriter out =
-                            new PrintWriter(clientSocket.getOutputStream(), true);
-                    BufferedReader in = new BufferedReader(
-                            new InputStreamReader(clientSocket.getInputStream()));
-            ) {
-
-                printWriters.add(out);
-
-                out.println("Hello, there. Please enter a username to join the chat: ");
-                String username = in.readLine();
-
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    System.out.println(inputLine);
-                    for(PrintWriter printWriter : printWriters) {
-                        printWriter.println(username + " says: " + inputLine);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public void update(String message) {
+        for(PrintWriter printWriter : printWriters) {
+            printWriter.println(message);
         }
     }
 }
