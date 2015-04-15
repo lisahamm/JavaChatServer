@@ -2,18 +2,16 @@ package com.lisa;
 
 import java.io.*;
 import java.net.*;
-import java.util.Iterator;
-import java.util.Vector;
 
-public class ChatThread extends Thread {
-    private Vector itsObservers = new Vector();
+public class ChatThread extends Thread implements Observer {
     private Socket clientSocket = null;
-    private ChatServer chatServer = null;
+    private ChatSubject chatSubject = null;
+    private PrintWriter printWriter = null;
 
-    public ChatThread(Socket socket, ChatServer chatServer) {
+    public ChatThread(Socket socket, ChatSubject chatSubject) {
         super("ChatThread");
         this.clientSocket = socket;
-        this.chatServer = chatServer;
+        this.chatSubject = chatSubject;
     }
 
     public void run() {
@@ -21,10 +19,10 @@ public class ChatThread extends Thread {
                 PrintWriter out =
                         new PrintWriter(clientSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(
-                        new InputStreamReader(clientSocket.getInputStream()));
+                        new InputStreamReader(clientSocket.getInputStream()))
         ) {
-            registerObserver(chatServer);
-            chatServer.addPrintWriter(out);
+            this.printWriter = out;
+            chatSubject.registerObserver(this);
             out.println("Hello, there. Please enter a username to join the chat: ");
             String username = in.readLine();
 
@@ -34,23 +32,15 @@ public class ChatThread extends Thread {
                 System.out.println(message);
                 if(inputLine.equals("Bye"))
                     break;
-                notifyObservers(message);
+                chatSubject.notifyObservers(message);
             }
+            clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    protected void notifyObservers(String message) {
-        Iterator i = itsObservers.iterator();
-        while (i.hasNext())
-        {
-            Observer observer = (Observer) i.next();
-            observer.update(message);
-        }
-    }
-
-    public void registerObserver(Observer observer) {
-        itsObservers.add(observer);
+    public void update(String message) {
+        printWriter.println(message);
     }
 }
