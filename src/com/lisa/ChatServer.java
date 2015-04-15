@@ -12,10 +12,10 @@ public class ChatServer implements Observer, Runnable {
     }
 
     public void run() {
-        try (ServerSocket serverSocket = new ServerSocket(portNumber);
-             Socket clientSocket = serverSocket.accept()) {
+        try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             System.out.println("Server is listening on port: " + portNumber);
             while (true) {
+                Socket clientSocket = serverSocket.accept();
                 System.out.println("Connection made with " + clientSocket);
                 ChatThread chatThread = new ChatThread(clientSocket, this);
                 chatThread.start();
