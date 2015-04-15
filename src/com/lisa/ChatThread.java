@@ -39,8 +39,7 @@ public class ChatThread extends Thread {
         }
     }
 
-    protected void notifyObservers(String message)
-    {
+    protected void notifyObservers(String message) {
         Iterator i = itsObservers.iterator();
         while (i.hasNext())
         {
@@ -49,8 +48,7 @@ public class ChatThread extends Thread {
         }
     }
 
-    public void registerObserver(Observer observer)
-    {
+    public void registerObserver(Observer observer) {
         itsObservers.add(observer);
     }
 }

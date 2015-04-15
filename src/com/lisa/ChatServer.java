@@ -1,11 +1,10 @@
 package com.lisa;
 import java.net.*;
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class ChatServer implements Observer, Runnable {
-    private static Set<PrintWriter> printWriters = new HashSet<PrintWriter>();
+    private static Set<PrintWriter> printWriters = Collections.synchronizedSet(new HashSet<PrintWriter>());
     private int portNumber = 0;
 
     public ChatServer(int portNumber) {
