@@ -18,4 +18,8 @@ public class ChatSubject {
     public void registerObserver(Observer observer) {
         itsObservers.add(observer);
     }
+
+    public void deregisterObserver(Observer observer) {
+        itsObservers.remove(observer);
+    }
 }
