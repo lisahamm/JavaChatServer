@@ -34,8 +34,7 @@ public class ChatThread extends Thread implements Observer {
                     break;
                 chatSubject.notifyObservers(message);
             }
-            chatSubject.deregisterObserver(this);
-            clientSocket.close();
+            close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,5 +42,12 @@ public class ChatThread extends Thread implements Observer {
 
     public void update(String message) {
         printWriter.println(message);
+    }
+
+    protected void close() throws IOException {
+        chatSubject.deregisterObserver(this);
+        printWriter.flush();
+        printWriter.close();
+        clientSocket.close();
     }
 }

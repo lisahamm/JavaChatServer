@@ -1,6 +1,7 @@
 package com.lisa;
 
 public class ChatServerMain {
+    private static ChatServer chatServer = null;
 
     public static void main(String[] args) {
 
@@ -11,9 +12,23 @@ public class ChatServerMain {
 
         int portNumber = Integer.parseInt(args[0]);
 
-        ChatServer chatServer = new ChatServer(portNumber);
+        chatServer = new ChatServer(portNumber);
+
+        ShutdownThread shutdownThread = new ShutdownThread();
+        Runtime.getRuntime().addShutdownHook(shutdownThread);
+
         chatServer.run();
     }
 
-
+    public static class ShutdownThread extends Thread {
+        public void run() {
+            chatServer.setKeepRunning(false);
+            try {
+                chatServer.closeThreads();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Exit. Shutdown hook ran!");
+        }
+    }
 }
