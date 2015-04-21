@@ -6,7 +6,7 @@ public class ChatServerMain {
     public static void main(String[] args) {
 
         if (args.length != 1) {
-            System.err.println("Usage: java EchoServer <port number>");
+            System.err.println("Usage: java ChatServer <port number>");
             System.exit(1);
         }
 
@@ -18,11 +18,13 @@ public class ChatServerMain {
         Runtime.getRuntime().addShutdownHook(shutdownThread);
 
         chatServer.run();
+        System.out.println("Finished");
+
     }
 
     public static class ShutdownThread extends Thread {
         public void run() {
-            chatServer.setKeepRunning(false);
+            chatServer.shutdown();
             try {
                 chatServer.closeThreads();
             } catch (InterruptedException e) {

@@ -28,8 +28,8 @@ public class ChatServer implements Runnable {
         }
     }
 
-    public void setKeepRunning(boolean value) {
-        this.keepRunning = value;
+    public void shutdown() {
+        this.keepRunning = false;
     }
 
     public void closeThreads() throws InterruptedException {
