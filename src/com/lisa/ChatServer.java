@@ -7,6 +7,7 @@ public class ChatServer implements Runnable {
     private int portNumber = 0;
     private boolean keepRunning = true;
     public ChatSubject chatSubject = new ChatSubject();
+    private ServerSocket serverSocket;
 
     public ChatServer(int portNumber) {
         this.portNumber = portNumber;
@@ -16,6 +17,7 @@ public class ChatServer implements Runnable {
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             System.out.println("Server is listening on port: " + portNumber);
             while (keepRunning) {
+                this.serverSocket = serverSocket;
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Connection made with " + clientSocket);
                 ChatThread chatThread = new ChatThread(clientSocket, chatSubject);
@@ -29,7 +31,18 @@ public class ChatServer implements Runnable {
     }
 
     public void shutdown() {
-        this.keepRunning = false;
+        keepRunning = false;
+        try {
+            closeThreads();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void closeThreads() throws InterruptedException {

@@ -14,7 +14,8 @@ public class ChatServerMain {
 
         chatServer = new ChatServer(portNumber);
 
-        ShutdownThread shutdownThread = new ShutdownThread();
+        Thread mainThread = Thread.currentThread();
+        ShutdownThread shutdownThread = new ShutdownThread(mainThread);
         Runtime.getRuntime().addShutdownHook(shutdownThread);
 
         chatServer.run();
@@ -23,10 +24,16 @@ public class ChatServerMain {
     }
 
     public static class ShutdownThread extends Thread {
+        private Thread mainThread;
+
+        public ShutdownThread(Thread mainThread) {
+            this.mainThread = mainThread;
+        }
+
         public void run() {
             chatServer.shutdown();
             try {
-                chatServer.closeThreads();
+                mainThread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
