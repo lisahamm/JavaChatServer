@@ -20,11 +20,26 @@ public class ChatSubjectTest {
     }
 
     @Test
-    public void testRegisterObserver() throws Exception {
+    public void testSingleRegisteredObserverNotified() throws Exception {
+        assertEquals(null, observer.lastMessage);
         chatSubject.registerObserver(observer);
         String message = "Update message";
         chatSubject.notifyObservers(message);
         assertEquals(message, observer.lastMessage);
+    }
+
+    @Test
+    public void testMultipleRegisteredObserversNotified() throws Exception {
+        MockObserver observer2 = new MockObserver();
+        MockObserver observer3 = new MockObserver();
+        chatSubject.registerObserver(observer);
+        chatSubject.registerObserver(observer2);
+        chatSubject.registerObserver(observer3);
+        String message = "Update message";
+        chatSubject.notifyObservers(message);
+        assertEquals(message, observer.lastMessage);
+        assertEquals(message, observer2.lastMessage);
+        assertEquals(message, observer3.lastMessage);
     }
 
     @Test
@@ -39,16 +54,6 @@ public class ChatSubjectTest {
         assertEquals(firstMessage, observer.lastMessage);
         assertFalse(secondMessage == observer.lastMessage);
     }
-    //
-//    @Test
-//    public void testNotifyObservers() throws Exception {
-//
-//    }
-//
-//    @Test
-//    public void testGetItsObservers() throws Exception {
-//
-//    }
 
     public class MockObserver implements Observer {
         public String lastMessage;
