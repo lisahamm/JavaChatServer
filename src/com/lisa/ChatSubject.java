@@ -5,7 +5,7 @@ import java.util.*;
 public class ChatSubject {
     private Vector itsObservers = new Vector();
 
-    protected void notifyObservers(String message) {
+    public void notifyObservers(String message) {
         synchronized (itsObservers) {
             Iterator i = itsObservers.iterator();
             while (i.hasNext()) {
@@ -24,7 +24,7 @@ public class ChatSubject {
     }
 
     public Set getItsObservers() {
-        Set<ChatThread> chatThreads = new HashSet<ChatThread>();
+        Set<Observer> chatThreads = new HashSet<>();
         synchronized (itsObservers) {
             Iterator i = itsObservers.iterator();
             while (i.hasNext()) {
