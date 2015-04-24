@@ -4,24 +4,19 @@ import java.io.*;
 import java.net.*;
 
 public class ChatThread extends Thread implements Observer {
-    private Socket clientSocket = null;
     private ChatSubject chatSubject = null;
-    private PrintWriter printWriter = null;
+    private PrintWriter out = null;
+    private BufferedReader in = null;
 
-    public ChatThread(Socket socket, ChatSubject chatSubject) {
+    public ChatThread(PrintWriter out, BufferedReader input, ChatSubject chatSubject) {
         super("ChatThread");
-        this.clientSocket = socket;
+        this.out = out;
+        this.in = new BufferedReader(input);
         this.chatSubject = chatSubject;
     }
 
     public void run() {
-        try (
-                PrintWriter out =
-                        new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(clientSocket.getInputStream()))
-        ) {
-            this.printWriter = out;
+        try {
             chatSubject.registerObserver(this);
             out.println("Hello, there. Please enter a username to join the chat: ");
             String username = in.readLine();
@@ -41,13 +36,13 @@ public class ChatThread extends Thread implements Observer {
     }
 
     public void update(String message) {
-        printWriter.println(message);
+        out.println(message);
     }
 
     protected void close() throws IOException {
         chatSubject.deregisterObserver(this);
-        printWriter.flush();
-        printWriter.close();
-        clientSocket.close();
+        in.close();
+        out.flush();
+        out.close();
     }
 }

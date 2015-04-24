@@ -20,7 +20,11 @@ public class ChatServer implements Runnable {
                 this.serverSocket = serverSocket;
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Connection made with " + clientSocket);
-                ChatThread chatThread = new ChatThread(clientSocket, chatSubject);
+
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(clientSocket.getInputStream());
+
+                ChatThread chatThread = new ChatThread(out, in, chatSubject);
                 chatThread.start();
             }
         } catch (IOException e) {
