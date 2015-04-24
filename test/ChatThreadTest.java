@@ -2,37 +2,46 @@ import com.lisa.ChatSubject;
 import com.lisa.ChatThread;
 import com.lisa.MyReader;
 import com.lisa.MyWriter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
-import java.awt.print.PrinterGraphics;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.net.Socket;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+
 
 public class ChatThreadTest {
     private ChatThread chatThread;
-    private StringWriter writer;
-    private StringReader reader;
+    private MockPrintWriter out;
+    private MockBufferedReader in;
 
     @Before
     public void setUp() throws Exception {
         ChatSubject chatSubject = new ChatSubject();
-        writer = new StringWriter();
-        reader = new StringReader("username\nmessage string");
-        PrintWriter out = new PrintWriter(writer, true);
-        BufferedReader in = new BufferedReader(reader);
+        out = new MockPrintWriter();
+        in = new MockBufferedReader();
         chatThread = new ChatThread(out, in, chatSubject);
     }
 
     @Test
-    public void testClientInput() throws Exception {
+    public void testClientInputIsWrittenToOutputStream() throws Exception {
         chatThread.run();
-        assertEquals("message", writer.toString());
+        assertEquals("username says: message string", out.lastMessage);
+    }
 
+    @Test
+    public void testIOStreamsCloseWhenInputIsNull() throws Exception {
+        assertTrue(in.closed == false);
+        assertTrue(out.closed == false);
+        chatThread.run();
+        assertTrue(in.closed == true);
+        assertTrue(out.closed == true);
+    }
+
+    @Test
+    public void testOutputStreamIsFlushedWhenInputIsNull() throws Exception {
+        assertTrue(out.flushed == false);
+        chatThread.run();
+        assertTrue(out.flushed == true);
     }
 
     public class MockPrintWriter implements MyWriter {
@@ -55,8 +64,19 @@ public class ChatThreadTest {
 
     public class MockBufferedReader implements MyReader {
         public Boolean closed = false;
+        private int count = 0;
+
         public String readLine() {
-            return "readLine string";
+            if (count == 0) {
+                count++;
+                return "username";
+            } else if (count == 1) {
+                count++;
+                return "message string";
+            } else {
+                count++;
+                return null;
+            }
         }
 
         public void close() {

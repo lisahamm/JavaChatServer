@@ -5,10 +5,10 @@ import java.net.*;
 
 public class ChatThread extends Thread implements Observer {
     private ChatSubject chatSubject = null;
-    private PrintWriter out = null;
-    private BufferedReader in = null;
+    private MyWriter out = null;
+    private MyReader in = null;
 
-    public ChatThread(PrintWriter out, BufferedReader input, ChatSubject chatSubject) {
+    public ChatThread(MyWriter out, MyReader input, ChatSubject chatSubject) {
         super("ChatThread");
         this.out = out;
         this.in = input;
