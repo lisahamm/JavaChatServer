@@ -2,8 +2,6 @@ import com.lisa.ChatSubject;
 import com.lisa.ChatThread;
 import com.lisa.MyReader;
 import com.lisa.MyWriter;
-import com.lisa.Reader;
-import com.lisa.Writer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,23 +15,23 @@ import static org.junit.Assert.assertEquals;
 
 public class ChatThreadTest {
     private ChatThread chatThread;
-    private MockPrintWriter mockOut;
-    private MockBufferedReader mockIn;
+    private StringWriter writer;
+    private StringReader reader;
 
     @Before
     public void setUp() throws Exception {
         ChatSubject chatSubject = new ChatSubject();
-        PrintWriter out = new PrintWriter(new StringWriter(), true);
-        BufferedReader in = new BufferedReader(new StringReader("message string"));
+        writer = new StringWriter();
+        reader = new StringReader("username\nmessage string");
+        PrintWriter out = new PrintWriter(writer, true);
+        BufferedReader in = new BufferedReader(reader);
         chatThread = new ChatThread(out, in, chatSubject);
     }
 
     @Test
     public void testClientInput() throws Exception {
         chatThread.run();
-        String input = mockIn.readLine();
-        String output = mockOut.lastMessage;
-        assertEquals(input, output);
+        assertEquals("message", writer.toString());
 
     }
 

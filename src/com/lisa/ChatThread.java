@@ -11,7 +11,7 @@ public class ChatThread extends Thread implements Observer {
     public ChatThread(PrintWriter out, BufferedReader input, ChatSubject chatSubject) {
         super("ChatThread");
         this.out = out;
-        this.in = new BufferedReader(input);
+        this.in = input;
         this.chatSubject = chatSubject;
     }
 

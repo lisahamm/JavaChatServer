@@ -21,7 +21,7 @@ public class ChatServer implements Runnable {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Connection made with " + clientSocket);
 
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                Writer out = new PrintWriter(clientSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(clientSocket.getInputStream());
 
                 ChatThread chatThread = new ChatThread(out, in, chatSubject);
