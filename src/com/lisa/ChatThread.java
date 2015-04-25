@@ -36,7 +36,7 @@ public class ChatThread extends Thread implements Observer {
             }
             close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
