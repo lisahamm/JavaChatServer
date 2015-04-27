@@ -44,5 +44,6 @@ public class ChatThread extends Thread implements Observer {
         in.close();
         out.flush();
         out.close();
+        chatSubject.getClientSocket(Thread.currentThread().getId()).close();
     }
 }

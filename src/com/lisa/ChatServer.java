@@ -25,6 +25,7 @@ public class ChatServer implements Runnable {
                 MyReader in = new MyBufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
                 ChatThread chatThread = new ChatThread(out, in, chatSubject);
+                chatSubject.registerClientSocket(chatThread.getId(), clientSocket);
                 chatThread.start();
             }
         } catch (IOException e) {

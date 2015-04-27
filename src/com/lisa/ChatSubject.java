@@ -1,8 +1,10 @@
 package com.lisa;
 
+import java.net.Socket;
 import java.util.*;
 
 public class ChatSubject {
+    private Hashtable<Long, Socket> clientSockets = new Hashtable<>();
     private Vector itsObservers = new Vector();
 
     public void notifyObservers(String message) {
@@ -13,6 +15,14 @@ public class ChatSubject {
                 observer.update(message);
             }
         }
+    }
+
+    public void registerClientSocket(Long threadID, Socket clientSocket) {
+        clientSockets.put(threadID, clientSocket);
+    }
+
+    public Socket getClientSocket(Long threadID) {
+        return clientSockets.get(threadID);
     }
 
     public void registerObserver(Observer observer) {
