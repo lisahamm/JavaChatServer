@@ -1,11 +1,6 @@
-import com.lisa.ChatSubject;
-import com.lisa.ChatThread;
-import com.lisa.MyReader;
-import com.lisa.MyWriter;
+package com.lisa;
+
 import org.junit.*;
-
-import java.net.Socket;
-
 import static org.junit.Assert.*;
 
 

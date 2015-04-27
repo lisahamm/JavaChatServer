@@ -1,5 +1,5 @@
-import com.lisa.ChatSubject;
-import com.lisa.Observer;
+package com.lisa;
+
 import org.junit.Before;
 import org.junit.Test;
 
