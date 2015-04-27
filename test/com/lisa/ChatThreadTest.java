@@ -1,6 +1,9 @@
 package com.lisa;
 
 import org.junit.*;
+
+import java.net.Socket;
+
 import static org.junit.Assert.*;
 
 
@@ -12,6 +15,7 @@ public class ChatThreadTest {
     @Before
     public void setUp() throws Exception {
         ChatSubject chatSubject = new ChatSubject();
+        chatSubject.registerClientSocket(Thread.currentThread().getId(), new Socket());
         out = new MockPrintWriter();
         in = new MockBufferedReader();
         chatThread = new ChatThread(out, in, chatSubject);
